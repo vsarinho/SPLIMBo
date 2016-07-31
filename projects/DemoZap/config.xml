@@ -1,0 +1,13 @@
+<zapapp path="/home/victor/projetos/DemoZap/">
+  <menu includeBackOption="false">
+    <text>Options: </text>
+    <command description="Hello World!!" keycode="System.order">
+      <text>Hello World!!!</text>
+    </command>
+    <prompt description="Echo" keycode="System.order" 
+            execAfterConfirmation="echo=System.currentMessage"
+	    confirmationMessage="Echo: System.echo">
+        <text>Send a text (V- Back):</text>
+    </prompt>	
+  </menu>
+</zapapp>

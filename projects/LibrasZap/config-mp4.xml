@@ -1,0 +1,162 @@
+<zapapp path="/home/victor/projetos/LibrasZap/">
+  <sequence>
+  <command> 
+    <exec>SQL.CONNECT(libraszap)
+    </exec>
+  </command>
+  
+  <menu includeBackOption="false">
+    
+    <text>Olá!!! Seja bem vindo ao LibrasZap, um jogo para a avaliação de conhecimentos em Libras!!
+
+Escolha uma das opções abaixo e interaja conosco:
+    </text>
+    <sequence keycode="I" description="Iniciar Partida">
+	  <command>
+		<exec>fimPartida=false</exec>
+	  </command>
+    
+    <sequence condition="System.fimPartida==false">
+	  <command>
+		<exec>acertou=true;;;score=0</exec>
+		<text>Iniciando ...</text>
+	  </command>
+      <sequence condition="System.acertou==true">
+	    <command>	    
+          <exec>
+		sairMenu=false;;;
+	        SQL.CALL(prepararJogada,,System.jidClient);;; 
+	        currentVideo=SQL.QUERY(select concat('mp4/',url,'.mp4') from Videos, Jogada where idCurrentVideo = Videos.id and jidCliente = ?,,System.jidClient);;;
+	        opcao1=SQL.QUERY(select opcao1 from Jogada where jidCliente = ?,,System.jidClient);;;
+	        opcao2=SQL.QUERY(select opcao2 from Jogada where jidCliente = ?,,System.jidClient);;;
+		opcao3=SQL.QUERY(select opcao3 from Jogada where jidCliente = ?,,System.jidClient);;;
+		opcao4=SQL.QUERY(select opcao4 from Jogada where jidCliente = ?,,System.jidClient);;;
+		opcaoCorreta=SQL.QUERY(select opcaoCorreta from Jogada where jidCliente = ?,,System.jidClient)
+          </exec></command>
+	  <command>
+	  <video>System.currentVideo</video>
+		</command>
+        <menu condition='System.sairMenu==false' includeBackOption="false">		  
+		<text>Tente adivinhar qual é a palavra no vídeo!	  
+Escolha uma das opções abaixo:
+		</text>		
+		  <command description="System.opcao1" keycode="System.order">
+		    <sequence>
+			  <command condition="'System.opcao1'=='System.opcaoCorreta'">
+			    <exec>++score;;;sairMenu=true</exec>			    
+			  </command>
+			  <command condition="'System.opcao1'=='System.opcaoCorreta'">
+			    <text>Parabéns vc acertou a System.scoreº palavra! Vamos para a próxima!!</text>
+			  </command>
+			  <command condition="'System.opcao1'!='System.opcaoCorreta'">
+			    <text>Que pena vc errou!! A resposta correta seria 'System.opcaoCorreta'. Total de pontos obtidos: System.score!</text>	      			  
+			    <exec>sairMenu=true;;;acertou=false</exec>			    
+			  </command>
+			</sequence>  
+		  </command>
+		  <command description="System.opcao2" keycode="System.order">
+		    <sequence>
+			  <command condition="'System.opcao2'=='System.opcaoCorreta'">
+			    <exec>++score;;;sairMenu=true</exec>			    
+			  </command>
+			  <command condition="'System.opcao2'=='System.opcaoCorreta'">
+			    <text>Parabéns vc acertou a System.scoreº palavra! Vamos para a próxima!!</text>
+			  </command>
+			  <command condition="'System.opcao2'!='System.opcaoCorreta'">
+			    <text>Que pena vc errou!! A resposta correta seria 'System.opcaoCorreta'. Total de pontos obtidos: System.score!</text>	      			  
+			    <exec>sairMenu=true;;;acertou=false</exec>			    
+			  </command>
+			</sequence>  
+		  </command>
+		  <command description="System.opcao3" keycode="System.order">
+		    <sequence>
+			  <command condition="'System.opcao3'=='System.opcaoCorreta'">
+			    <exec>++score;;;sairMenu=true</exec>			    
+			  </command>
+			  <command condition="'System.opcao3'=='System.opcaoCorreta'">
+			    <text>Parabéns vc acertou a System.scoreº palavra! Vamos para a próxima!!</text>
+			  </command>
+			  <command condition="'System.opcao3'!='System.opcaoCorreta'">
+			    <text>Que pena vc errou!! A resposta correta seria 'System.opcaoCorreta'. Total de pontos obtidos: System.score!</text>	      			  
+			    <exec>sairMenu=true;;;acertou=false</exec>			    
+			  </command>
+			</sequence>  
+		  </command>
+		  <command description="System.opcao4&#13;&#10;" keycode="System.order">
+		    <sequence>
+			  <command condition="'System.opcao4'=='System.opcaoCorreta'">
+			    <exec>++score;;;sairMenu=true</exec>			    
+			  </command>
+			  <command condition="'System.opcao4'=='System.opcaoCorreta'">
+			    <text>Parabéns vc acertou a System.scoreº palavra! Vamos para a próxima!!</text>
+			  </command>
+			  <command condition="'System.opcao4'!='System.opcaoCorreta'">
+			    <text>Que pena vc errou!! A resposta correta seria 'System.opcaoCorreta'. Total de pontos obtidos: System.score!</text>	      			  
+			    <exec>sairMenu=true;;;acertou=false</exec>			    
+			  </command>
+			</sequence>  
+		  </command>
+		  <command description="Repetir Vídeo" keycode="R">
+			<video>System.currentVideo</video>
+		</command>
+        </menu>
+      </sequence>
+	  <command>
+        <exec>posicaoHalldaFama=SQL.CALL(posicaoHalldaFama,,System.score);;;
+	      SQL.CALL(registrarPartida,,System.jidClient,,System.score)</exec>
+	  </command>
+      <prompt condition='System.posicaoHalldaFama&lt;=10' execAfterConfirmation="SQL.CALL(registrarResultado,,System.jidClient,,System.currentMessage,,System.score)">
+	    <text>Parabéns, vc ficou entre os 10 melhores!! Informe um nome para registrarmos seu resultado (máx. 10 caracteres):</text>
+	  </prompt>
+      <prompt execAfterConfirmation="tentarNovamente=System.currentMessage">
+        <text>Quer tentar novamente (S-Sim/N-Não):</text>
+      </prompt>
+	  <command condition="('System.tentarNovamente'=='N') || ('System.tentarNovamente'=='n')">
+		<exec>fimPartida=true</exec>      			  
+	  </command>
+    </sequence>
+    </sequence>
+    
+    <command description="Melhores Resultados" keycode="M">
+	  <sequence>
+	    <command>
+		  <exec>hallDaFama=SQL.CALL(obterHallDaFama,,System.jidClient)</exec>      			  
+	    </command>
+		<command>
+		  <text>System.hallDaFama</text>	
+	    </command>      
+	  </sequence>
+    </command>
+    
+    <command description="Pesquisa de Opinião" keycode="P">
+	  <sequence>
+	    <prompt execAfterConfirmation="opiniao1=System.currentMessage">
+	      <text>Serão feitas 4 perguntas importantes para análise futura do LibrasZap. Por favor responda até o fim para registrarmos sua opinião!</text>	
+              <text>1- Em uma escala de 1 (não conhece) a 5 (conhece muito), qual o seu nível de conhecimento em Libras? ('V'-Voltar)</text>
+            </prompt>   
+	    <prompt execAfterConfirmation="opiniao2=System.currentMessage">
+              <text>2- Em uma escala de 1 (inútil) a 5 (muito útil), qual seria o nível de utilidade do LibrasZap para o aprendizado em Libras? ('V'-Voltar)</text>
+            </prompt>
+	    <prompt execAfterConfirmation="opiniao3=System.currentMessage">
+              <text>3- Em uma escala de 1 (muito difícil) a 5 (muito fácil), qual seria o nível de dificuldade em aprender a usar/utilizar o LibrasZap? ('V'-Voltar)</text>
+            </prompt>
+	    <prompt execAfterConfirmation="opiniao4=System.currentMessage">
+              <text>4- Em uma escala de 1 (insatisfeito) a 5 (muito satisfeito), qual o seu nível de satisfação com o LibrasZap? ('V'-Voltar)</text>
+            </prompt>   
+	    <command>
+		<exec>SQL.CALL(registrarPesquisa,,System.jidClient,,System.opiniao1,,System.opiniao2,,System.opiniao3,,System.opiniao4)</exec>
+		<text>Opinião registrada com sucesso! Obrigado pela colaboração!</text>
+	    </command>
+	  </sequence>
+    </command>
+      
+    <command description="Sobre" keycode="S">
+	<text>LibrasZap é um jogo desenvolvido pelo Prof. D.Sc. Victor T. Sarinho - DEXA/UEFS para a avaliação de conhecimentos em Libras, a Língua Brasileira de Sinais.
+Trata-se de um chat game suportado por um serviço Multi-Instant Messaging baseado no dicionário de libras fornecido pelo Instituto Nacional de Surdos (INES) (disponível em http://www.ines.gov.br/ ).
+Logo do LibrasZap foi desenvolvido com base no símbolo "Acessível em Libras" desenvolvido pelo Centro de Comunicação (Cedecom) da Universidade Federal de Minas Gerais (UFMG) (disponível em https://www.ufmg.br/marca/libras/ ).
+</text>		   
+    </command>
+  </menu>			
+  </sequence>
+</zapapp>
+
