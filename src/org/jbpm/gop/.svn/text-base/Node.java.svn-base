@@ -1,0 +1,58 @@
+
+package org.jbpm.gop;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.log4j.Logger;
+
+/** a node in the process graph */
+public class Node {
+	private static Logger log = Logger.getLogger(Node.class);
+
+	private String name;
+	/** maps events to transitions */
+	Map<String, Transition> transitions = new HashMap<String, Transition>();
+	/** maps events to actions */
+	Map<String, List<Action>> actions = new HashMap<String, List<Action>>();
+
+	public Node(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * create a new transition to the destination node and associate it with the given event
+	 */
+	public void addTransition(String event, Node destination) {
+		transitions.put(event, new Transition(destination));
+	}
+
+	/** add the action to the given event */
+	public void addAction(String event, Action action) {
+		if (actions.containsKey(event)) {
+			actions.get(event).add(action);
+		}
+		else {
+			List<Action> eventActions = new ArrayList<Action>();
+			eventActions.add(action);
+			actions.put(event, eventActions);
+		}
+	}
+
+	/**
+	 * to be overriden by Node implementations. The default doesn't propagate the execution so it behaves as a wait state.
+	 */
+	public void execute(Execution execution) {
+		log.info("arrived in wait state " + this);
+	}
+
+	@Override
+	public String toString() {
+		return "node '" + name + "'";
+	}
+}

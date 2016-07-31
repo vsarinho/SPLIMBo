@@ -1,0 +1,147 @@
+
+package org.jbpm.gop;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+import org.apache.log4j.Logger;
+
+/** one path of execution */
+public class Execution extends Thread {
+	private static Logger logger = Logger.getLogger(Execution.class);
+	private static Execution instance;
+
+	public static final String EVENT_CLOSING__ENABLE = "END_end_END";
+	Queue<Object> queue = new LinkedBlockingQueue<Object>();
+
+	/** pointer to the current node */
+	public Node node = null;
+	private boolean transition;
+
+	String name;
+	Execution parent = null;
+	Map<String, Execution> children = new HashMap<String, Execution>();
+	boolean isActive = true;
+	Map<String, Object> variables = new HashMap<String, Object>();
+
+	/** an execution always starts in a given node */
+	private Execution(String name, Node node) {
+		this.node = node;
+		this.name = name;
+	}
+
+	public static void initialNode(String name, Node node) {
+		Execution execution = new Execution(name, node);
+		instance = execution;
+	}
+
+	public static Execution get() {
+		return instance;
+	}
+
+	/** executes the current node's actions and takes the event's transition */
+	public void event(String event) {
+		synchronized (queue) {
+			queue.add(event);
+			transition = true;
+			queue.notifyAll();
+		}
+	}
+
+	/** Checa se o nó corrente é igual à 'node' e se for dispara o evento. */
+	public synchronized void checkAndSendEvent(String node, String event) {
+		if (this.node.getName().equals(node) && !transition) {
+			event(event);
+		}
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			if (queue.isEmpty()) {
+				try {
+					synchronized (queue) {
+						queue.wait();
+					}
+				}
+				catch (InterruptedException e) {
+					logger.error("Erro no queue.wait", e);
+				}
+			}
+
+			String event = (String) queue.remove();
+
+			fire(event);
+			if (node.transitions.containsKey(event)) {
+				fire("leave-node");
+				take(node.transitions.get(event));
+			}
+		}
+	}
+
+	/** take a transition */
+	void take(Transition transition) {
+		node = transition.destination;
+		this.transition = false;
+		enter(transition.destination);
+	}
+
+	/** enter the next node */
+	void enter(Node node) {
+		fire("enter-node");
+		node.execute(this);
+	}
+
+	/** fires the actions of a node for a specific event */
+	void fire(String event) {
+		List<Action> eventActions = node.actions.get(event);
+		if (eventActions != null) {
+			for (Action action : eventActions) {
+				action.execute();
+			}
+		}
+	}
+
+	public Execution createChild(String name) {
+		Execution child = new Execution(name, node);
+		child.parent = this;
+		children.put(name, child);
+		return child;
+	}
+
+	public void end() {
+		isActive = false;
+	}
+
+	public void setVariable(String key, Object value) {
+		variables.put(key, value);
+	}
+
+	public Object getVariable(String key) {
+		return variables.get(key);
+	}
+
+	public Object getVariable(String key, Object defaultValue) {
+		Object value = getVariable(key);
+		return value != null ? value : defaultValue;
+	}
+
+	public Object removeVariable(String key) {
+		return variables.remove(key);
+	}
+
+	public boolean containsVariable(String key) {
+		return variables.containsKey(key);
+	}
+
+	public void clearStack() {
+		queue.clear();
+	}
+
+	@Override
+	public String toString() {
+		return "execution";
+	}
+}
