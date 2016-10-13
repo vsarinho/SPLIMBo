@@ -1,0 +1,6 @@
+{
+  "name": "Simion",
+  "tagline": "A SPL Approach for Cross-Platform IM Bots",
+  "body": "# Simion\r\nA SPL Approach for Cross-Platform IM Bots\r\n\r\nhttp://dx.doi.org/10.5281/zenodo.59161\r\n\r\nBot examples available at:\r\n* https://web.telegram.org/#/im?p=@DemoZapBot\r\n* https://web.telegram.org/#/im?p=@LibrasZap_bot\r\n* https://web.telegram.org/#/im?p=@GuessMyNumber_bot",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
