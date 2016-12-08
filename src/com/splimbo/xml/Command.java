@@ -1,4 +1,4 @@
-package com.simion.xml;
+package com.splimbo.xml;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package com.simion;
+package com.splimbo;
 
 import java.io.*;
 import java.sql.*;
@@ -48,29 +48,30 @@ public class Messenger extends Thread {
 	}
 	
 	public static void sendMedia(String jidServer, String jidClient, String url, String path, String extension){
-		
-        try {
-			PreparedStatement pdst = conn.prepareStatement(
-					"insert into Queue(jidServer, jidClient, url, data, imageLabel, extension, status, dateTime, dateTimeToSend) "
-					+ "values (?,?,?,?,?,?,?,?,?)");
-			pdst.setString(1, jidServer);
-			pdst.setString(2, jidClient);
-			pdst.setString(3, url);
-			pdst.setBytes(4, null);
-			pdst.setString(5, path);
-			pdst.setString(6, extension);
-			pdst.setString(7, "S");
-			
-			String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
-			pdst.setString(8, currentDate);
-			pdst.setString(9, currentDate);
-			pdst.executeUpdate();
-
-			conn.commit();
-			
-			System.out.println("sendMedia:" + path);
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (!"".equals(path)){
+	        try {
+				PreparedStatement pdst = conn.prepareStatement(
+						"insert into Queue(jidServer, jidClient, url, data, imageLabel, extension, status, dateTime, dateTimeToSend) "
+						+ "values (?,?,?,?,?,?,?,?,?)");
+				pdst.setString(1, jidServer);
+				pdst.setString(2, jidClient);
+				pdst.setString(3, url);
+				pdst.setBytes(4, null);
+				pdst.setString(5, path);
+				pdst.setString(6, extension);
+				pdst.setString(7, "S");
+				
+				String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+				pdst.setString(8, currentDate);
+				pdst.setString(9, currentDate);
+				pdst.executeUpdate();
+	
+				conn.commit();
+				
+				System.out.println("sendMedia:" + path);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -190,10 +191,17 @@ public class Messenger extends Thread {
 
 	public String getZapAppReference(String code) throws Exception {		 
 		Properties prop = new Properties();
+		   
 		String propFileName = Util.APPS_PATH + "zapApps.properties";
  
 		prop.load(new FileInputStream(propFileName));
+		/*
+		PrintWriter writer = new PrintWriter(System.out);
+        prop.list(writer);
+        writer.flush();
 		
+		System.out.println("code:"+code+ "; prop.getProperty(code)="+prop.getProperty(code));
+		*/
  		return prop.getProperty(code);
 	}	
 	

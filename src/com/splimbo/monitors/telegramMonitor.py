@@ -1,4 +1,4 @@
-import pprint, telepot, sys, time, mysql.connector, threading
+import pprint, telepot, sys, time, threading, mysql.connector #pymysql.cursors
 
 
 class MyThread(threading.Thread):
@@ -25,7 +25,8 @@ class MyThread(threading.Thread):
         self.counter = self.counter + 1
 
         #verificar mensagens do BD para enviar
-        cnx = mysql.connector.connect(user='root', password='', database='zapserver', use_unicode=True)
+        cnx = mysql.connector.connect(user='root', password='root', database='zapserver', use_unicode=True)
+        # cnx = pymysql.connect(host='localhost', user='root', password='root', db='zapserver', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
         cursor = cnx.cursor()
         cursor.execute('SET NAMES utf8mb4')
@@ -98,6 +99,7 @@ class MyThread(threading.Thread):
 
 def handle(msg):
     pprint.pprint(msg)
+    #print("Chegou mensagem!!");
 
     message = None
     extension = None
@@ -133,7 +135,8 @@ def handle(msg):
 
 
     if extension is not None:
-        cnx = mysql.connector.connect(user='root', password='', database='zapserver', use_unicode=True)
+        cnx = mysql.connector.connect(user='root', password='root', database='zapserver', use_unicode=True)
+        #cnx = pymysql.connect(host='localhost', user='root', password='root', db='zapserver', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
         cursor = cnx.cursor()
         cursor.execute('SET NAMES utf8mb4')
@@ -156,12 +159,12 @@ def handle(msg):
 
 # Getting the token from command-line is better than embedding it in code,
 # because tokens are supposed to be kept secret.
-TOKEN = sys.argv[2]
+TOKEN = sys.argv[3]
+jidServer = sys.argv[2]
+print ('Starting jidServer:'+jidServer+' token:'+TOKEN)
 
-jidServer = TOKEN.split(':')[0]
-print ('Starting jidServer:'+jidServer)
-
-bot = telepot.Bot(TOKEN)
+bot = telepot.Bot(jidServer+':'+TOKEN)
+bot.getMe()
 bot.message_loop(handle)
 
 thread = MyThread(bot)

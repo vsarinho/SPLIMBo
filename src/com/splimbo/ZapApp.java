@@ -1,4 +1,4 @@
-package com.simion;
+package com.splimbo;
 
 import org.jbpm.gop.*;
 

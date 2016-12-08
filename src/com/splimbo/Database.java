@@ -1,4 +1,4 @@
-package com.simion;
+package com.splimbo;
 
 import java.sql.*;
 
@@ -15,7 +15,7 @@ public class Database {
 				e.printStackTrace();
 			}
 			result = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+database+"?" + 
-												"user=root&password=");
+												"user=root&password=root");
 		} 
 		catch (SQLException e) {
 			e.printStackTrace();

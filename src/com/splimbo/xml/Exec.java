@@ -1,8 +1,8 @@
-package com.simion.xml;
+package com.splimbo.xml;
 
 import org.jbpm.gop.Execution;
 
-import com.simion.XMLZap;
+import com.splimbo.XMLZap;
 
 public class Exec extends Option {
 	public String instruction = "";

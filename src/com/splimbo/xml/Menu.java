@@ -1,12 +1,12 @@
-package com.simion.xml;
+package com.splimbo.xml;
 
 import java.util.*;
 
 import org.jbpm.gop.Execution;
 
-import com.simion.Messenger;
-import com.simion.Util;
-import com.simion.XMLZap;
+import com.splimbo.Messenger;
+import com.splimbo.Util;
+import com.splimbo.XMLZap;
 
 public class Menu extends Option {
 	public boolean includeBackOption = true;
@@ -65,14 +65,26 @@ public class Menu extends Option {
 		Iterator<Option> iterOptions = options.iterator();
 		while (iterOptions.hasNext()){
 			Option currentOption = iterOptions.next();
-			String keyText = currentOption.getKeyText();
-			if (keyText.contains("System.order")){
-				keyText = XMLZap.applyContext(execution, keyText.replace("System.order",""+order));	
-				instructions.put(order, currentOption);
-			}
 			
-			result += "\n" + keyText;
-			order++;
+			boolean canAddOption = true;
+			
+			if (currentOption instanceof Command)
+				canAddOption = XMLZap.evaluateCondition(execution, ((Command) currentOption).condition);					
+			
+			if (currentOption instanceof Sequence)
+				canAddOption = XMLZap.evaluateCondition(execution, ((Sequence) currentOption).condition);					
+			
+			
+			if (canAddOption){
+				String keyText = currentOption.getKeyText();
+				if (keyText.contains("System.order")){
+					keyText = XMLZap.applyContext(execution, keyText.replace("System.order",""+order));	
+					instructions.put(order, currentOption);
+				}
+				
+				result += "\n" + keyText;
+				order++;
+			}
 		}
 		
 		// footer

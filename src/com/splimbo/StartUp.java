@@ -1,4 +1,4 @@
-package com.simion;
+package com.splimbo;
 
 
 public class StartUp {

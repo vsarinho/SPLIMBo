@@ -1,4 +1,4 @@
-package com.simion;
+package com.splimbo;
 
 public class Util {
 	public static String RETURN_TEXT = "V - Voltar";

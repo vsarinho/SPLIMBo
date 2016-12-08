@@ -1,4 +1,4 @@
-package com.simion.xml;
+package com.splimbo.xml;
 
 public abstract class Option {
 	public String description = "";

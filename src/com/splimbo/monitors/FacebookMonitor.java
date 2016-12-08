@@ -1,4 +1,4 @@
-package com.simion.monitors;
+package com.splimbo.monitors;
 
 import java.io.FileInputStream;
 import java.sql.ResultSet;
@@ -7,7 +7,7 @@ import java.util.*;
 
 import com.restfb.*;
 import com.restfb.types.*;
-import com.simion.Database;
+import com.splimbo.Database;
 
 
 public class FacebookMonitor extends java.lang.Thread {

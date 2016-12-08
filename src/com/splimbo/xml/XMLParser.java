@@ -1,10 +1,10 @@
-package com.simion.xml;
+package com.splimbo.xml;
 
 import java.io.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
-import com.simion.XMLZap;
+import com.splimbo.XMLZap;
 
 public class XMLParser {	
 	

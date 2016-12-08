@@ -1,4 +1,4 @@
-package com.simion;
+package com.splimbo;
 
 import java.io.*;
 import java.net.*;
@@ -8,7 +8,7 @@ import java.util.*;
 
 import javax.script.*;
 
-import com.simion.xml.*;
+import com.splimbo.xml.*;
 
 import org.jbpm.gop.*;
 
