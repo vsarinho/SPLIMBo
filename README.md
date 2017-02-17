@@ -1,4 +1,4 @@
-# SPLIBo
+# SPLIMBo
 A SPL Approach for Cross-Platform IM Bots
 
 Bot examples available at:
